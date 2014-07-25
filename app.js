@@ -1,7 +1,7 @@
 var spheron = require('spheron');
 var _ = require('underscore');
 var sphero = spheron.sphero();
-var spheroPort = '/dev/rfcomm0';
+var spheroPort = findPortArg();//'/dev/rfcomm1';//rfcomm0
 var COLORS = spheron.toolbelt.COLORS;
 
 sphero.on('open', function() {
@@ -83,9 +83,22 @@ var control = {
 }
 
 function quit(){
+	console.log("Exiting");
 	control.stop();
 	process.exit(1);
 }
 
-//console.log(spheron);
+function findPortArg(){
+	var result = '';
+	process.argv.forEach(function (val, index, array) {
+		if ( val.indexOf('/dev') == 0 ){
+			result = val;
+			return false;
+		}
+		return true;
+	});
+	return result;
+}
+
+console.log('Node: trying to connect to port ' + spheroPort);
 sphero.open(spheroPort);
